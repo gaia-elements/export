@@ -97,6 +97,8 @@ function copyElement(element) {
 		'cd ' + element.repoFolder,
 		'git add *',
 		'git commit -m "[' + element.name + '] ' + config.commitMessage + '"',
+
+		// Commented out intentionally. You better be sure you want to do this.
 		//'git push origin'
 	].join(' && ');
 	console.log('Running: ' + command);
@@ -115,7 +117,6 @@ function formatTemplatesSync(element) {
 		var fileContent = fs.readFileSync(__dirname + '/templates/' + file, 'utf8');
 		fileContent = fileContent.replace(/\{name\}/g, element.name);
 
-		//fs.unlinkSync(element.repoFolder);
 		fs.writeFileSync(element.repoFolder + file, fileContent, 'utf8');
 	});
 }
