@@ -13,7 +13,8 @@ if (!fs.existsSync(configPath)) {
 
 var config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 var elements = JSON.parse(fs.readFileSync(elementsPath, 'utf8'));
-var remainingElements = Object.keys(elements);
+// Do these in reverse order so the org pages stays in alphabetical order.
+var remainingElements = Object.keys(elements).reverse();
 
 // Create the working directory if we need to.
 var checkoutDir = __dirname + '/' + config.checkoutDir;
