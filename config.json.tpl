@@ -1,5 +1,6 @@
 {
 	"remote": "git@github.com:gaia-elements/",
 	"gaiaPath": "../gaia/",
-	"checkoutDir": "../tmp_gaia_elements/"
+	"checkoutDir": "../tmp_gaia_elements/",
+	"commitMessage": "Update component."
 }

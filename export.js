@@ -3,7 +3,7 @@ var fs = require('fs');
 var configPath = __dirname + '/config.json';
 var elementsPath = __dirname + '/elements.json';
 
-var sys = require('sys')
+var sys = require('sys');
 var exec = require('child_process').exec;
 
 if (!fs.existsSync(configPath)) {
@@ -11,8 +11,8 @@ if (!fs.existsSync(configPath)) {
 	return;
 }
 
-var config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-var elements = JSON.parse(fs.readFileSync(elementsPath, 'utf-8'));
+var config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+var elements = JSON.parse(fs.readFileSync(elementsPath, 'utf8'));
 var remainingElements = Object.keys(elements);
 
 // Create the working directory if we need to.
@@ -59,7 +59,7 @@ function cloneRepos() {
 		].join(' && ');
 		console.log('Running: ' + command);
 		exec(command, function() {
-			console.log('args: ', arguments)
+			console.log('args: ', arguments);
 			eachRepo();
 		});
 	}
@@ -76,30 +76,47 @@ function exportNextElement() {
 	var element = elements[elementKey];
 	element.name = elementKey;
 
+	element.repoFolder = checkoutDir + element.name + '/';
+	element.gaiaElementFolder = config.gaiaPath + 'shared/elements/gaia_' + element.name;
+
 	console.log('Exporting: ' + elementKey);
 	copyElement(element);
 }
 
 function copyElement(element) {
-	var repoFolder = checkoutDir + element.name + '/element';
-	var gaiaElementFolder = config.gaiaPath + 'shared/elements/gaia_' + element.name;
-
 	// If the element folder does not exist, create it.
-	if (!fs.existsSync(repoFolder)) {
-		fs.mkdirSync(repoFolder);
+	if (!fs.existsSync(element.repoFolder + 'element')) {
+		fs.mkdirSync(element.repoFolder + 'element');
 	}
 
+	// Format templates
+	formatTemplatesSync(element);
+
 	var command = [
-		'cp -R ' + gaiaElementFolder + '/* ' + repoFolder + '/',
-		'cd ' + repoFolder,
+		'cp -R ' + element.gaiaElementFolder + '/* ' + element.repoFolder + 'element/',
+		'cd ' + element.repoFolder,
 		'git add *',
-		'git commit -m "Import ' + element.name + ' custom element from gaia."',
-		'git push origin'
+		'git commit -m "[' + element.name + '] ' + config.commitMessage + '"',
+		//'git push origin'
 	].join(' && ');
 	console.log('Running: ' + command);
 	exec(command, function() {
-		console.log('args: ', arguments)
-		exportNextElement();
+		console.log('args: ', arguments);
+		exportNextElement(element);
+	});
+}
+
+function formatTemplatesSync(element) {
+	var files = [
+		'README.md'
+	];
+
+	files.forEach(function(file) {
+		var fileContent = fs.readFileSync(__dirname + '/templates/' + file, 'utf8');
+		fileContent = fileContent.replace(/\{name\}/g, element.name);
+
+		//fs.unlinkSync(element.repoFolder);
+		fs.writeFileSync(element.repoFolder + file, fileContent, 'utf8');
 	});
 }
 
