@@ -95,6 +95,14 @@ function copyElement(element) {
 
 	var command = [
 		'cp -R ' + element.gaiaElementFolder + '/* ' + element.repoFolder + 'element/',
+
+		// Super hack for component utils.
+		// These will be removed in the future, but for now copy the file and replace any reference to it in examples
+		'cp ' + element.gaiaElementFolder + '/../../js/component_utils.js ' + element.repoFolder + 'element/.',
+		'cd ' + element.repoFolder,
+		'find ./ -type f -name "*.html" -exec sed -i -e \'s/\\.\\.\\/\\.\\.\\/\\.\\.\\/js\\/component_utils\\.js/\\.\\.\\/component_utils\\.js/g\' {} \\;',
+		'rm element/examples/*.html-e 2>/dev/null',
+
 		'cd ' + element.repoFolder,
 		'git add *',
 		'git commit -m "[' + element.name + '] ' + config.commitMessage + '"',
