@@ -100,7 +100,7 @@ function copyElement(element) {
 		'git commit -m "[' + element.name + '] ' + config.commitMessage + '"',
 
 		// Commented out intentionally. You better be sure you want to do this.
-		//'git push origin'
+		//'git push origin && git checkout gh-pages && git merge master && git push origin && git checkout master'
 	].join(' && ');
 	console.log('Running: ' + command);
 	exec(command, function() {
