@@ -107,7 +107,7 @@ function copyElement(element) {
 		// Instead of including other repositories here for components, we simply change the paths of the script files. E.g., 
 		// <script src="../../gaia_buttons/script.js"></script> becomes:
 		// <script src="http://gaia-elements.github.io/buttons/element/script.js"></script>
-		'find ./ -type f -name "*.html" -exec sed -i -e \'s/\\.\\.\\/\\.\\.\\/gaia_/http:\\/\\/gaia-elements\\.github\\.io\\/element\\//g\' {} \\;',
+		'find ./ -type f -name "*.html" -exec sed -i -e \'s/\\.\\.\\/\\.\\.\\/gaia_\\([A-Za-z]*\\)/http:\\/\\/gaia-elements\\.github\\.io\\/\\1\\/element/g\' {} \\;',
 		'rm element/examples/*.html-e 2>/dev/null',
 
 
